@@ -34,22 +34,19 @@ In `config/services.yaml`, add this instruction in services providers
 ## congnqnexlesoft/lumen-maintenance-mode ##
 MAINTENANCE_RESPONSE_FORMAT=json
 ```
-### Using View
-- Copy these files to your project (if):
+### Copy these files to your project (if):
 ```
 public/.gitignore
 ```
 
-## Put the application into maintenance mode.
-
+## Put the application into maintenance mode (Symfony)
 ```shell
-php artisan down
+php bin/console down
 ```
 
-## Bring the application out of maintenance mode.
-
+## Bring the application out of maintenance mode (Symfony)
 ```shell
-php artisan up
+php bin/console up
 ```
 
 ---
