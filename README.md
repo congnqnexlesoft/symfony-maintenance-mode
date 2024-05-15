@@ -10,11 +10,13 @@ composer require congnqnexlesoft/symfony-maintenance-mode
 In `config/services.yaml`, add this instruction in services providers
 
 ```yaml
+    CongnqNexlesoft\MaintenanceMode\MaintenanceModeService:
+      autowire: true
     CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\DownCommand:
       class: CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\DownCommand
       tags: [ 'console.command' ]
     CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\UpCommand:
-      class: CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\DownCommand
+      class: CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\UpCommand
       tags: [ 'console.command' ]
 ```
 ## Response
