@@ -32,12 +32,8 @@ class DirHelper
      */
     public static function getWorkingDir(string $subDirOrFile = null): string
     {
-        // case: Console command
-        if (in_array($_SERVER['SCRIPT_FILENAME'], ['bin/console', 'artisan'])) {
-            return $_SERVER['PWD'];
-        }
-        // case: PHP request
-        $workingDir = str_replace('/public/index.php', '', $_SERVER['SCRIPT_FILENAME']);
+        $workingDir = in_array($_SERVER['SCRIPT_FILENAME'], ['bin/console', 'artisan']) ? $_SERVER['PWD'] // case: Console command
+            : str_replace('/public/index.php', '', $_SERVER['SCRIPT_FILENAME']); // case: PHP request
         return !$subDirOrFile ? $workingDir : sprintf("%s/%s", $workingDir, $subDirOrFile);
     }
 }
