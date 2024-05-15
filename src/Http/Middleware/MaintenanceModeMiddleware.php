@@ -38,7 +38,7 @@ class MaintenanceModeMiddleware
      * @throws InvalidArgumentException
      */
     public function handle($request, Closure $next)
-    {
+    { // todo handle
         if ($this->maintenance->isDownMode() && !$this->maintenance->checkAllowedIp($this->getIp())) {
             // Response uses JSON (required config .env)
             if (strtolower(getenv('MAINTENANCE_RESPONSE_FORMAT')) === 'json') {

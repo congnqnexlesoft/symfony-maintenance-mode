@@ -2,121 +2,84 @@
 
 namespace CongnqNexlesoft\MaintenanceMode;
 
-use Laravel\Lumen\Application;
+use CongnqNexlesoft\MaintenanceMode\Helpers\DirHelper;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class MaintenanceModeService
 {
     /**
-     * File to verify maintenance mode.
-     *
+     * File to verify maintenance mode. In Symfony, will put the file at 'public/down'
      * @var string
      */
-    protected $maintenanceFile = 'framework/down';
+    protected $maintenanceFile = 'public/down';
 
-    /**
-     * Lumen Application instance.
-     *
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * MaintenanceModeService constructor.
-     * @param Application $app
-     */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $this->app = $app;
     }
 
     /**
      * Verify if application is in maintenance mode.
-     *
      * @return bool
      */
-    public function isDownMode()
+    public function isDownMode(): bool
     {
         return $this->maintenanceFileExists();
     }
 
     /**
      * Indicates if maintenance file exists.
-     *
      * @return bool
      */
-    public function maintenanceFileExists()
+    public function maintenanceFileExists(): bool
     {
         return file_exists($this->maintenanceFilePath());
     }
 
     /**
      * Maintenance file path.
-     *
      * @return string
      */
-    public function maintenanceFilePath()
+    public function maintenanceFilePath(): string
     {
-        return $this->app->storagePath($this->maintenanceFile);
+        return DirHelper::getWorkingDir($this->maintenanceFile);
     }
 
     /**
      * Verify if application is up.
-     *
      * @return bool
      */
-    public function isUpMode()
+    public function isUpMode(): bool
     {
         return !$this->maintenanceFileExists();
     }
 
     /**
      * Put the application in down mode.
-     *
      * @return bool true if success and false if something fails.
-     *@throws Exceptions\FileException
+     * @throws FileNotFoundException
      *
      */
-    public function setDownMode()
+    public function setDownMode(): bool
     {
         $file = $this->maintenanceFilePath();
-
         if (!touch($file)) {
-            $message = sprintf(
-                'Something went wrong on trying to create maintenance file %s.',
-                $file
-            );
-
-            throw new Exceptions\FileException($message);
+            throw new FileNotFoundException(sprintf('Something went wrong on trying to create maintenance file %s.', $file));
         }
-
         return true;
     }
 
     /**
      * Put application in up mode.
-     *
      * @return bool true if success and false if something fails.
-     *@throws Exceptions\FileException
+     * @throws FileNotFoundException
      *
      */
-    public function setUpMode()
+    public function setUpMode(): bool
     {
         $file = $this->maintenanceFilePath();
-
         if (file_exists($file) && !unlink($file)) {
-            $message = sprintf(
-                'Something went wrong on trying to remove maintenance file %s.',
-                $file
-            );
-
-            throw new Exceptions\FileException($message);
+            throw new FileNotFoundException(sprintf('Something went wrong on trying to remove maintenance file %s.', $file));
         }
-
         return true;
-    }
-
-    public function checkAllowedIp($ip): bool
-    {
-        return in_array($ip, explode(',', env('ALLOWED_IPS')));
     }
 }

@@ -8,9 +8,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
-class DownCommand extends Command
+class UpCommand extends Command
 {
-    const COMMAND = 'down';
+    const COMMAND = 'up';
 
     /**
      * Maintenance Service.
@@ -34,7 +34,7 @@ class DownCommand extends Command
     protected function configure()
     {
         $this->setName(self::COMMAND);
-        $this->setDescription("Put the application into maintenance mode.");
+        $this->setDescription("Bring the application out of maintenance mode.'");
     }
 
     /**
@@ -43,22 +43,22 @@ class DownCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // handle
-        //    Put the application into maintenance mode.
-        if ($this->maintenance->isUpMode()) {
-            $this->setDownMode($input, $output);
+        //    Bring the application out of maintenance mode.
+        if ($this->maintenance->isDownMode()) {
+            $this->setUpMode($input,$output);
         } else {
-            $output->writeln('<<warning>>The application is already in maintenance mode!</<warning>>');
+            $output->writeln('<info>The application was already alive.</info>');
         }
     }
 
     /**
-     * Set Application Down Mode.
+     * Set Application Up Mode.
      * @return void
      * @throws FileNotFoundException
      */
-    public function setDownMode(InputInterface $input, OutputInterface $output)
+    public function setUpMode(InputInterface $input, OutputInterface $output)
     {
-        $this->maintenance->setDownMode();
-        $output->writeln('<<warning>>Application is now in maintenance mode.</<warning>>');
+        $this->maintenance->setUpMode();
+        $output->writeln('<info>Application is now live.</info>');
     }
 }

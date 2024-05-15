@@ -6,13 +6,16 @@
 composer require congnqnexlesoft/symfony-maintenance-mode
 ```
 
-Todo update
-
 ## How to configure
-In `bootstrap/app.php`, add this instruction in providers
+In `config/services.yaml`, add this instruction in services providers
 
-```PHP
-$app->register(CongnqNexlesoft\MaintenanceMode\Providers\MaintenanceModeServiceProvider::class);
+```yaml
+    CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\DownCommand:
+      class: CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\DownCommand
+      tags: [ 'console.command' ]
+    CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\UpCommand:
+      class: CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\DownCommand
+      tags: [ 'console.command' ]
 ```
 ## Response
 ### Using JSON
@@ -22,10 +25,13 @@ $app->register(CongnqNexlesoft\MaintenanceMode\Providers\MaintenanceModeServiceP
 MAINTENANCE_RESPONSE_FORMAT=json
 ```
 ### Using View
-- Copy these files to your project:
+- Copy these files to your project (if):
 ```
+public/.gitignore
+
+
 resources/views/errors/503.blade.php
-storage/framework/.gitignore
+
 ```
 
 ## Put the application into maintenance mode.
@@ -40,16 +46,7 @@ php artisan down
 php artisan up
 ```
 
-## IP released for access
-
-In `.env` file
-
-```dotenv
-ALLOWED_IPS=999.99.9.999,999.99.9.999,999.99.9.999
-```
-
 ---
-
 ## DevOps
 ### Release a new version
 ```shell

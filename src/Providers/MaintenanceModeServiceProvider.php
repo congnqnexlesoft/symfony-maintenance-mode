@@ -8,6 +8,7 @@ use CongnqNexlesoft\MaintenanceMode\Console\Commands\UpCommand;
 use CongnqNexlesoft\MaintenanceMode\Http\Middleware\MaintenanceModeMiddleware;
 use CongnqNexlesoft\MaintenanceMode\MaintenanceModeService;
 
+// todo remove
 class MaintenanceModeServiceProvider extends ServiceProvider
 {
     /**
