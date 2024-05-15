@@ -3,7 +3,7 @@
   "type": "library",
   "description": "A custom maintenance mode for Symfony",
   "keywords": [
-    "lumen",
+    "symfony",
     "maintenance",
     "mode"
   ],
