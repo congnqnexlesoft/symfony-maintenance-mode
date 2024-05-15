@@ -1,0 +1,42 @@
+{
+  "name": "congnqnexlesoft/symfony-maintenance-mode",
+  "type": "library",
+  "description": "A custom maintenance mode for Symfony",
+  "keywords": [
+    "lumen",
+    "maintenance",
+    "mode"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Cong Nguyen Quang",
+      "email": "congnqnexlesoft@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2.3",
+    "symfony/console": "^4.0",
+    "symfony/framework-bundle": "^4.0"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "CongnqNexlesoft\\MaintenanceMode\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CongnqNexlesoft\\MaintenanceMode\\": "src"
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "allow-plugins": {
+      "kylekatarnls/update-helper": false
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
