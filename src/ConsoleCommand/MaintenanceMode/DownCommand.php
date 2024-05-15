@@ -47,7 +47,7 @@ class DownCommand extends Command
         if ($this->maintenance->isUpMode()) {
             $this->setDownMode($input, $output);
         } else {
-            $output->writeln('<<warning>>The application is already in maintenance mode!</<warning>>');
+            $output->writeln('<comment>The application is already in maintenance mode!</comment>');
         }
     }
 
@@ -59,6 +59,6 @@ class DownCommand extends Command
     public function setDownMode(InputInterface $input, OutputInterface $output)
     {
         $this->maintenance->setDownMode();
-        $output->writeln('<<warning>>Application is now in maintenance mode.</<warning>>');
+        $output->writeln('<comment>Application is now in maintenance mode.</comment>');
     }
 }

@@ -2,78 +2,52 @@
 
 namespace CongnqNexlesoft\MaintenanceMode\Http\Middleware;
 
-use Closure;
+use CongnqNexlesoft\MaintenanceMode\Helpers\DirHelper;
 use CongnqNexlesoft\MaintenanceMode\MaintenanceModeService;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use InvalidArgumentException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use CongnqNexlesoft\MaintenanceMode\Traits\ResponseTrait;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class MaintenanceModeMiddleware
 {
-    /**
-     * Maintenance Mode Service.
-     *
-     * @var MaintenanceModeService
-     */
-    protected $maintenance;
+    use ResponseTrait;
+
+    /** @var MaintenanceModeService */
+    private $maintenanceModeService;
 
     /**
-     * MaintenanceModeMiddleware constructor.
-     * @param MaintenanceModeService $maintenance
+     * @param MaintenanceModeService $maintenanceModeService
      */
-    public function __construct(MaintenanceModeService $maintenance)
+    public function __construct(
+        MaintenanceModeService $maintenanceModeService
+    )
     {
-        $this->maintenance = $maintenance;
+        $this->maintenanceModeService = $maintenanceModeService;
     }
 
-    /**
-     * Handle incoming requests.
-     *
-     * @param Request $request
-     * @param Closure $next
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws HttpException
-     * @throws InvalidArgumentException
-     */
-    public function handle($request, Closure $next)
-    { // todo handle
-        if ($this->maintenance->isDownMode() && !$this->maintenance->checkAllowedIp($this->getIp())) {
+    public function onRequest(RequestEvent $event)
+    {
+        if ($this->maintenanceModeService->isDownMode()) {
             // Response uses JSON (required config .env)
             if (strtolower(getenv('MAINTENANCE_RESPONSE_FORMAT')) === 'json') {
-                return response()->json([
+                $this->forceResponseJson([
                     'success' => false,
                     'error' => 'UNDER_MAINTENANCE',
                     'message' => 'UNDER_MAINTENANCE',
-                ], Response::HTTP_SERVICE_UNAVAILABLE);
+                ], Response::HTTP_SERVICE_UNAVAILABLE); // END
             }
             // Response uses view
-            if (app()['view']->exists('errors.503')) {
-                return new Response(app()['view']->make('errors.503'), 503);
-            }
-            // Response uses others way
-            if (config('maintenance')) {
-                return response(config('maintenance')["response"], config('maintenance')["httpCode"]);
-            } else {
-                return app()->abort(503, 'The application is down for maintenance.');
-            }
+            $this->forceResponse($this->render503ViewManually(), Response::HTTP_SERVICE_UNAVAILABLE); // END
         }
-
-        return $next($request);
     }
 
     /**
-     * Get client ip
+     * @return string
      */
-    private function getIp()
+    private function render503ViewManually(): string
     {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            return $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            return $_SERVER['REMOTE_ADDR'];
-        }
+        return str_replace("{{ appName }}", getenv('APP_NAME'), file_get_contents(
+            DirHelper::getWorkingDir('vendor/congnqnexlesoft/symfony-maintenance-mode/src/templates/errors/503.html.twig')
+        ));
     }
 }

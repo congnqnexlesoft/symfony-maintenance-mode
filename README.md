@@ -10,14 +10,22 @@ composer require congnqnexlesoft/symfony-maintenance-mode
 In `config/services.yaml`, add this instruction in services providers
 
 ```yaml
-    CongnqNexlesoft\MaintenanceMode\MaintenanceModeService:
-      autowire: true
+    # [BEGIN] congnqnexlesoft/lumen-maintenance-mode
     CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\DownCommand:
       class: CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\DownCommand
       tags: [ 'console.command' ]
     CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\UpCommand:
       class: CongnqNexlesoft\MaintenanceMode\ConsoleCommand\MaintenanceMode\UpCommand
       tags: [ 'console.command' ]
+    CongnqNexlesoft\MaintenanceMode\MaintenanceModeService:
+      autowire: true
+    CongnqNexlesoft\MaintenanceMode\Http\Middleware\MaintenanceModeMiddleware:
+      class: CongnqNexlesoft\MaintenanceMode\Http\Middleware\MaintenanceModeMiddleware
+      arguments:
+        - '@CongnqNexlesoft\MaintenanceMode\MaintenanceModeService'
+      tags:
+        - { name: kernel.event_listener, event: kernel.request, method: onRequest }
+    # [END] congnqnexlesoft/lumen-maintenance-mode
 ```
 ## Response
 ### Using JSON
@@ -30,10 +38,6 @@ MAINTENANCE_RESPONSE_FORMAT=json
 - Copy these files to your project (if):
 ```
 public/.gitignore
-
-
-resources/views/errors/503.blade.php
-
 ```
 
 ## Put the application into maintenance mode.
